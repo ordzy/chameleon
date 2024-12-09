@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chameleon 🦎</title>
+    <style>
+        :root {
+            --bg-color: #f8f8f8;
+            --text-color: #333;
+            --header-bg: #333;
+            --header-text: white;
+            --btn-bg: #555;
+            --btn-text: white;
+            --chart-header-bg: #444; /* New color for better visibility */
+        }
+        [data-theme="dark"] {
+            --bg-color: #333;
+            --text-color: #f8f8f8;
+            --header-bg: #222;
+            --header-text: #f8f8f8;
+            --btn-bg: #444;
+            --btn-text: #ddd;
+            --chart-header-bg: #666; /* Adjust for dark mode */
+        }
+        * {
+            transition: background-color 0.2s, color 0.2s;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            background-color: var(--btn-bg);
+            padding: 10px 0;
+        }
+        nav a {
+            color: var(--btn-text);
+            text-decoration: none;
+            padding: 10px 15px;
+            background-color: var(--btn-bg);
+            border-radius: 5px;
+        }
+        nav a:hover {
+            background-color: #666;
+        }
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .converter-section, .about-section, .chart-section {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        textarea, input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        button {
+            cursor: pointer;
+            padding: 10px 15px;
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        button:hover {
+            background-color: #666;
+        }
+        .chart-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .chart-table th, .chart-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .chart-table th {
+            background-color: var(--chart-header-bg);
+            color: var(--header-text);
+        }
+        .theme-toggle {
+            cursor: pointer;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--header-text);
+        }
+        .info-icon {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            background: var(--header-bg);
+            color: var(--header-text);
+            border-radius: 50%;
+            padding: 10px;
+            text-align: center;
+        }
+        .info-icon:hover::after {
+            content: "NOTE: This text may not look the exact same on every font";
+            position: absolute;
+            bottom: 50px;
+            right: 10px;
+            width: 200px;
+            background: var(--header-bg);
+            color: var(--header-text);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Chameleon🦎</h1>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+</header>
+
+<nav>
+    <a href="#about" onclick="showSection('about-section')">About</a>
+    <a href="#chart" onclick="showSection('chart-section')">C&P Chart</a>
+    <a href="#converter" onclick="showSection('converter-section')">Converter</a>
+</nav>
+
+<main>
+    <section id="about-section" class="about-section active">
+        <h2>About</h2>
+        <p>Use this tool to convert your text into unique characters that looks identical (in some fonts).<br><br>Works great for getting a taken username in games! <br><br><br><br><br><br><br><br><br><br>Made with ❤️ ordzy</p>
+    </section>
+
+    <section id="chart-section" class="chart-section">
+        <h2>C&P Chart</h2>
+        <table class="chart-table">
+            <thead>
+                <tr>
+                    <th>Character</th>
+                    <th>Replacement</th>
+                </tr>
+            </thead>
+            <tbody id="chart-body">
+                <!-- Populated via JavaScript -->
+            </tbody>
+        </table>
+    </section>
+
+    <section id="converter-section" class="converter-section">
+        <h2>Converter</h2>
+        <textarea id="input-text" placeholder="Enter text here..." oninput="resetCopyButton()"></textarea>
+        <button onclick="convertText()">Convert</button>
+        <h3>Converted Text</h3>
+        <textarea id="output-text" placeholder="Your output goes here..." readonly></textarea>
+        <button id="copy-btn" onclick="copyText()">Copy to Clipboard</button>
+    </section>
+</main>
+
+<div class="info-icon">ℹ️</div>
+
+<script>
+    const replacements = {
+        "a": "a", "b": "ᖯ", "c": "c", "d": "ԁ", "e": "e", "f": "ꬵ", "g": "ɡ",
+        "h": "һ", "j": "j", "l": "l", "n": "ո", "o": "o", "p": "p", "s": "s",
+        "u": "ս", "v": "ᴠ", "w": "ԝ", "x": "x", "y": "y", "z": "ᴢ",
+        "A": "Α", "B": "Β", "C": "Ϲ", "D": "Ꭰ", "E": "Ε", "F": "𐊇", "G": "Ԍ",
+        "H": "Η", "I": "Ι", "J": "Ј", "K": "K", "L": "Ꮮ", "M": "M", "N": "Ν",
+        "O": "O", "P": "P", "R": "𖼵", "S": "S", "T": "T", "U": "Ս", "V": "Ꮩ",
+        "W": "Ԝ", "X": "X", "Y": "Y", "Z": "Ζ",
+        "!": "ǃ", "-": "˗", "=": "᐀", "'": "ʹ", ":": "։", "\"": "ʺ", ",": "‚",
+        ".": "ꓸ", "<": "˂", ">": "˃"
+    };
+
+    function showSection(sectionId) {
+        document.querySelectorAll("main > section").forEach(section => {
+            section.classList.remove("active");
+        });
+        document.getElementById(sectionId).classList.add("active");
+    }
+
+    function convertText() {
+        const inputText = document.getElementById("input-text").value;
+        const outputText = Array.from(inputText).map(char => replacements[char] || char).join('');
+        document.getElementById("output-text").value = outputText;
+    }
+
+    function copyText() {
+        const outputText = document.getElementById("output-text");
+        outputText.select();
+        document.execCommand("copy");
+        const copyBtn = document.getElementById("copy-btn");
+        copyBtn.textContent = "Copied!";
+    }
+
+    function resetCopyButton() {
+        const copyBtn = document.getElementById("copy-btn");
+        copyBtn.textContent = "Copy to Clipboard";
+    }
+
+    function populateChart() {
+        const chartBody = document.getElementById("chart-body");
+        for (const [char, replacement] of Object.entries(replacements)) {
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${char}</td><td>${replacement}</td>`;
+            chartBody.appendChild(row);
+        }
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.body.getAttribute("data-theme") || "light";
+        const newTheme = currentTheme === "light" ? "dark" : "light";
+        document.body.setAttribute("data-theme", newTheme);
+        document.querySelector('.theme-toggle').textContent = newTheme === "light" ? "🌙" : "☀️";
+    }
+
+    window.onload = populateChart;
+</script>
+
+</body>
+</html>
